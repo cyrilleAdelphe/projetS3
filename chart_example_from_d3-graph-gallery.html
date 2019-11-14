@@ -35,7 +35,7 @@
   
 </body>
 <div class="axe">
-  <span>Y:<span>
+  <span>X:<span>
   
  <select class="dropdown" id="ddx">
     <option value="libido" selected="selected">libido</option>
@@ -46,7 +46,7 @@
 </div>
 
 <div class="axe">
-  <span>X:</span>
+  <span>Y:</span>
 <select class="dropdown" id="ddy">
     <option value="libido">libido</option>
     <option value="health" selected="selected">health</option>
@@ -79,16 +79,26 @@ var jsondata;
   var x = d3.scaleLinear()
     .domain([0, 60])
     .range([ 0, width ]);
+
+  var x_axis = d3.axisBottom()
+      .scale(x);
+
   svg.append("g")
+    .attr("class", "x axis")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+    .call(x_axis);
 
   // Add Y axis
   var y = d3.scaleLinear()
     .domain([-15, 110])
     .range([ height, 0]);
+
+  var y_axis = d3.axisLeft()
+      .scale(y);
+
   svg.append("g")
-    .call(d3.axisLeft(y));
+    .attr("class", "y axis")
+    .call(y_axis);
 
 // definition de la div du tooltips
 var div = d3.select("body").append("div")	
@@ -108,13 +118,13 @@ d3.json("https://raw.githubusercontent.com/cyrilleAdelphe/projetS3/master/data/t
     .data(data.filter(function(d,i){return i<5000})) // the .filter part is just to keep a few dots on the chart, not all of them
     .enter()
     .append("circle")
-      .attr("class", "x axis")
-      .attr('id', 'xAxis')
+      .attr("class", "all dots")
+      .attr('id', 'allDots')
       .attr("cx", function (d) { console.log(d.libido); return x(d.libido); } )
       .attr("cy", function (d) { console.log(d.health); return y(d.health); } )
       .attr("r", 9)
       .style("fill", "#91eb13")
-      .style("opacity", 0.1)
+      .style("opacity", 0.5)
       .style("stroke", "white")
     .on("mouseover", function(d) {
        div.transition()
@@ -138,16 +148,89 @@ $( ".dropdown" ).change(function() {
   var e = document.getElementById("ddy");
   var selectedy = e.options[e.selectedIndex].value;
   console.log("dropdown changed x y = "+selectedx+" "+selectedy);
+
   //points.exit().remove();
-  d3.selectAll('#xAxis').remove();
+  d3.selectAll('#allDots').remove();
+
+  var xtext;
+  var xmax = 0;
+  var xmin = 0;
+  if (selectedx === "eatCount") {
+    xtext = "eatCount";
+    for (var i = jsondata.length - 1; i >= 0; i--) {
+      if (jsondata[i].eatCount > xmax)
+        xmax = jsondata[i].eatCount;
+      else if (jsondata[i].eatCount < xmin)
+        xmin = jsondata[i].eatCount;
+    }
+  }
+  else if (selectedx === "libido") {
+    xtext = "libido";
+    for (var i = jsondata.length - 1; i >= 0; i--) {
+      if (jsondata[i].libido > xmax)
+        xmax = jsondata[i].libido;
+      else if (jsondata[i].libido < xmin)
+        xmin = jsondata[i].libido;
+    }
+  }
+  else if (selectedx === "health") {
+    xtext = "health";
+    for (var i = jsondata.length - 1; i >= 0; i--) {
+      if (jsondata[i].health > xmax)
+        xmax = jsondata[i].health;
+      else if (jsondata[i].health < xmin)
+        xmin = jsondata[i].health;
+    }
+  }
+
+  var ytext;
+  var ymax = 0;
+  var ymin = 0;
+  if (selectedy === "eatCount") {
+    ytext = "eatCount";
+    for (var i = jsondata.length - 1; i >= 0; i--) {
+      if (jsondata[i].eatCount > ymax)
+        ymax = jsondata[i].eatCount;
+      else if (jsondata[i].eatCount < ymin)
+        ymin = jsondata[i].eatCount;
+    }
+  }
+  else if (selectedy === "libido") {
+    ytext = "libido";
+    for (var i = jsondata.length - 1; i >= 0; i--) {
+      if (jsondata[i].libido > ymax)
+        ymax = jsondata[i].libido;
+      else if (jsondata[i].libido < ymin)
+        ymin = jsondata[i].libido;
+    }
+  }
+  else if (selectedy === "health") {
+    ytext = "health";
+    for (var i = jsondata.length - 1; i >= 0; i--) {
+      if (jsondata[i].health > ymax)
+        ymax = jsondata[i].health;
+      else if (jsondata[i].health < ymin)
+        ymin = jsondata[i].health;
+    } 
+  }
+
+  x.domain([xmin, xmax+10]);
+    svg.select(".x")
+        .transition()
+          .call(x_axis);
+
+  y.domain([ymin, ymax+10]);
+    svg.select(".y")
+        .transition()
+          .call(y_axis);
   
   svg.append('g')
     .selectAll("dot")
     .data(jsondata.filter(function(d,i){return i<50})) // the .filter part is just to keep a few dots on the chart, not all of them
     .enter()
     .append("circle")
-      .attr("class", "x axis")
-      .attr('id', 'xAxis')
+      .attr("class", "all dots")
+      .attr('id', 'allDots')
       .attr("cx", function (d) { 
         if (selectedx === "eatCount") 
           return x(d.eatCount);
@@ -166,14 +249,14 @@ $( ".dropdown" ).change(function() {
       } )
       .attr("r", 9)
       .style("fill", "#91eb13")
-      .style("opacity", 0.3)
+      .style("opacity", 0.5)
       .style("stroke", "white")
     .on("mouseover", function(d) {
        div.transition()
          .duration(200)
          .style("opacity", .9);
        div .html("PlanetUIID: " + d.planetUuid)
-      .style("left", (d3.mouse(this)[0]+90) + "px")
+      .style("left", (d3.mouse(this)[0]+200) + "px")
       .style("top", (d3.mouse(this)[1]) + "px")} )
     .on("mouseout", function(d) {
       div.transition()
@@ -181,22 +264,29 @@ $( ".dropdown" ).change(function() {
       .style("opacity", 0)
   } );
 
+d3.selectAll('#axeText').remove();
 //text label for the x axis
-   svg.append("text")             
+   svg.append("text")  
+      .attr("class", "axe text")
+      .attr('id', 'axeText')           
       .attr("transform",
             "translate(" + (width/2) + " ," + 
                            (height + margin.top + 20) + ")")
       .style("text-anchor", "middle")
-      .text("Axe X");
+      .text(xtext);
 
 // text label for the y axis
     svg.append("text")
+      .attr("class", "axe text")
+      .attr('id', 'axeText') 
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - margin.left)
       .attr("x",0 - (height / 2))
       .attr("dy", "1em")
       .style("text-anchor", "middle")
-      .text("Axe Y");     
+      .text(ytext);     
+
+    
 
 });
 
