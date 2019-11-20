@@ -100,6 +100,7 @@ var svg = d3.select("#my_dataviz")
           "translate(" + margin.left + "," + margin.top + ")");
 
 var jsondata;
+var selectedx, selectedy;
 
 // Add X axis
   var x = d3.scaleLinear()
@@ -136,6 +137,7 @@ function handleMouseClick(d, i) {  // Add interactivity
   console.log("Click!");
   console.log(d);
   console.log(i);
+  console.log("selx "+d[selectedx]+" sely "+d[selectedy]);
 
   $('.list-group').empty();
   $('.list-group').append("<a class=list-group-item list-group-item-action' id='list-"+d.uuid+"-list' data-toggle='list' href='#list-"+d.uuid+"' role='tab' aria-controls='"+d.uuid+"'>"+d.uuid+"</a>");
@@ -144,7 +146,7 @@ function handleMouseClick(d, i) {  // Add interactivity
     +"</div>");
   //populate the list
   for (var i = jsondata.length - 1; i >= 0; i--) {
-      if ((jsondata[i].libido === d.libido) && (jsondata[i].health === d.health)) {
+      if ((jsondata[i][selectedx] === d[selectedx]) && (jsondata[i][selectedy] === d[selectedy])) {
         $('.list-group').append("<a class=list-group-item list-group-item-action' id='list-"+jsondata[i].uuid+"-list' data-toggle='list' href='#list-"+jsondata[i].uuid+"' role='tab' aria-controls='"+jsondata[i].uuid+"'>"+jsondata[i].uuid+"</a>");
         $('.tab-content').append("<div class='tab-pane fade' id='list-"+jsondata[i].uuid+"' role='tabpanel' aria-labelledby='list-"+jsondata[i].uuid+"-list'>Uuid: "+
           jsondata[i].uuid
@@ -156,8 +158,6 @@ function handleMouseClick(d, i) {  // Add interactivity
 
 //Read the data
 d3.json("https://raw.githubusercontent.com/cyrilleAdelphe/projetS3/master/data/planet_demo_state_modified.json", function(err, data) {
-//d3.json("https://raw.githubusercontent.com/cyrilleAdelphe/projetS3/master/data/test.json", function(data) {
-//d3.json("https://raw.githubusercontent.com/cyrilleAdelphe/projetS3/master/data/test3.json", function(err, data) {
   if(err) console.log("error fetching data: "+ err);
   jsondata = data;
   //console.log(data); 
@@ -192,11 +192,10 @@ d3.json("https://raw.githubusercontent.com/cyrilleAdelphe/projetS3/master/data/p
 })
 
 $( ".dropdown" ).change(function() {
-  // chart.options.data[0].dataPoints = [];
   var e = document.getElementById("ddx");
-  var selectedx = e.options[e.selectedIndex].value;
+  selectedx = e.options[e.selectedIndex].value;
   var e = document.getElementById("ddy");
-  var selectedy = e.options[e.selectedIndex].value;
+  selectedy = e.options[e.selectedIndex].value;
   console.log("dropdown changed x y = "+selectedx+" "+selectedy);
   console.log(jsondata[1]);
   console.log("value of the second " + jsondata[1][selectedx]);
@@ -204,66 +203,20 @@ $( ".dropdown" ).change(function() {
   //points.exit().remove();
   d3.selectAll('#allDots').remove();
 
-  var xtext;
   var xmax = 0;
   var xmin = 0;
-  if (selectedx === "eatCount") {
-    xtext = "eatCount";
-    for (var i = jsondata.length - 1; i >= 0; i--) {
-      if (jsondata[i].eatCount > xmax)
-        xmax = jsondata[i].eatCount;
-      else if (jsondata[i].eatCount < xmin)
-        xmin = jsondata[i].eatCount;
-    }
-  }
-  else if (selectedx === "libido") {
-    xtext = "libido";
-    for (var i = jsondata.length - 1; i >= 0; i--) {
-      if (jsondata[i].libido > xmax)
-        xmax = jsondata[i].libido;
-      else if (jsondata[i].libido < xmin)
-        xmin = jsondata[i].libido;
-    }
-  }
-  else if (selectedx === "health") {
-    xtext = "health";
-    for (var i = jsondata.length - 1; i >= 0; i--) {
-      if (jsondata[i].health > xmax)
-        xmax = jsondata[i].health;
-      else if (jsondata[i].health < xmin)
-        xmin = jsondata[i].health;
-    }
-  }
-
-  var ytext;
   var ymax = 0;
   var ymin = 0;
-  if (selectedy === "eatCount") {
-    ytext = "eatCount";
-    for (var i = jsondata.length - 1; i >= 0; i--) {
-      if (jsondata[i].eatCount > ymax)
-        ymax = jsondata[i].eatCount;
-      else if (jsondata[i].eatCount < ymin)
-        ymin = jsondata[i].eatCount;
-    }
-  }
-  else if (selectedy === "libido") {
-    ytext = "libido";
-    for (var i = jsondata.length - 1; i >= 0; i--) {
-      if (jsondata[i].libido > ymax)
-        ymax = jsondata[i].libido;
-      else if (jsondata[i].libido < ymin)
-        ymin = jsondata[i].libido;
-    }
-  }
-  else if (selectedy === "health") {
-    ytext = "health";
-    for (var i = jsondata.length - 1; i >= 0; i--) {
-      if (jsondata[i].health > ymax)
-        ymax = jsondata[i].health;
-      else if (jsondata[i].health < ymin)
-        ymin = jsondata[i].health;
-    } 
+  for (var i = jsondata.length - 1; i >= 0; i--) {
+    if (jsondata[i][selectedx] > xmax)
+      xmax = jsondata[i][selectedx];
+    else if (jsondata[i][selectedx] < xmin)
+      xmin = jsondata[i][selectedx];
+
+    if (jsondata[i][selectedy] > ymax)
+      ymax = jsondata[i][selectedy];
+    else if (jsondata[i][selectedy] < ymin)
+      ymin = jsondata[i][selectedy];
   }
 
   console.log(xmax);
@@ -285,21 +238,11 @@ $( ".dropdown" ).change(function() {
     .append("circle")
       .attr("class", "all dots")
       .attr('id', 'allDots')
-      .attr("cx", function (d) { 
-        if (selectedx === "eatCount") 
-          return x(d.eatCount);
-        else if (selectedx === "libido")
-          return x(d.libido);
-        else if (selectedx === "health")
-          return x(d.health);
+      .attr("cx", function (d) {
+          return x(d[selectedx]);
       } )
-      .attr("cy", function (d) { 
-        if (selectedy === "eatCount") 
-          return y(d.eatCount);
-        else if (selectedy === "libido")
-          return y(d.libido);
-        else if (selectedy === "health")
-          return y(d.health); 
+      .attr("cy", function (d) {
+          return y(d[selectedy]); 
       } )
       .attr("r", 9)
       .style("fill", "#91eb13")
@@ -328,7 +271,7 @@ d3.selectAll('#axeText').remove();
             "translate(" + (width/2) + " ," + 
                            (height + margin.top + 20) + ")")
       .style("text-anchor", "middle")
-      .text(xtext);
+      .text(selectedx);
 
 // text label for the y axis
     svg.append("text")
@@ -339,7 +282,7 @@ d3.selectAll('#axeText').remove();
       .attr("x",0 - (height / 2))
       .attr("dy", "1em")
       .style("text-anchor", "middle")
-      .text(ytext);     
+      .text(selectedy);     
 
 });
 
