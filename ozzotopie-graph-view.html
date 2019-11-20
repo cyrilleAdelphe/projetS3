@@ -10,7 +10,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 
-
 <style type="text/css">
 	.axe
 	{
@@ -140,10 +139,6 @@ function handleMouseClick(d, i) {  // Add interactivity
   console.log("selx "+d[selectedx]+" sely "+d[selectedy]);
 
   $('.list-group').empty();
-  $('.list-group').append("<a class=list-group-item list-group-item-action' id='list-"+d.uuid+"-list' data-toggle='list' href='#list-"+d.uuid+"' role='tab' aria-controls='"+d.uuid+"'>"+d.uuid+"</a>");
-  $('.tab-content').append("<div class='tab-pane fade' id='list-"+d.uuid+"' role='tabpanel' aria-labelledby='list-"+d.uuid+"-list'>Uuid: "+
-    d.uuid
-    +"</div>");
   //populate the list
   for (var i = jsondata.length - 1; i >= 0; i--) {
       if ((jsondata[i][selectedx] === d[selectedx]) && (jsondata[i][selectedy] === d[selectedy])) {
