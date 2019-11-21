@@ -53,9 +53,12 @@ function handleMouseClick(d, i) {  // Add interactivity
   console.log("Click!");
   console.log(d);
   console.log(i);
+  console.log(jsondata[0].parentUuidList[0]);
   console.log("selx "+d[selectedx]+" sely "+d[selectedy]);
 
   $('.list-group').empty();
+  $('.tab-content').empty();
+  $('.tab-contenttp1').empty();
   //populate the list
   for (var i = jsondata.length - 1; i >= 0; i--) {
       if ((jsondata[i][selectedx] === d[selectedx]) && (jsondata[i][selectedy] === d[selectedy])) {
@@ -63,6 +66,16 @@ function handleMouseClick(d, i) {  // Add interactivity
         $('.tab-content').append("<div class='tab-pane fade' id='list-"+jsondata[i].uuid+"' role='tabpanel' aria-labelledby='list-"+jsondata[i].uuid+"-list'>Uuid: "+
           jsondata[i].uuid
           +"</div>");
+          //ajout de la liste des parents
+          console.log(jsondata[i]);
+          console.log(jsondata[i].parentUuidList);
+          console.log(jsondata[i].parentUuidList[0]);
+          //$('.tab-contentp1').append("<a class=list-group-item list-group-item-action' id='list-"+jsondata[i].parentUuidList[0]+"-list' data-toggle='list' href='#list-"+jsondata[i].parentUuidList[0]+"' role='tab' aria-controls='"+jsondata[i].parentUuidList[0]+"'>"+jsondata[i].parentUuidList[0]+"</a>");
+          $('.tab-contentp1').append("<div class='tab-pane fade' id='list-"+jsondata[i].uuid+"' role='tabpanel' aria-labelledby='list-"+jsondata[i].uuid+"-list'>Uuid: "+
+          jsondata[i].parentUuidList[0]
+          +"</div>");
+          //$('.tab-contentp2').append("<a class=list-group-item list-group-item-action' id='list-"+jsondata[i].parentUuidList[1]+"-list' data-toggle='list' href='#list-"+jsondata[i].parentUuidList[1]+"' role='tab' aria-controls='"+jsondata[i].parentUuidList[1]+"'>"+jsondata[i].parentUuidList[1]+"</a>");
+      
       }
   }
 }
