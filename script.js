@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 30, left: 60},
-    width = 860 - margin.left - margin.right,
+var margin = {top: 10, right: 30, bottom: 60, left: 60},
+    width = 1060 - margin.left - margin.right,
     height = 550 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
@@ -8,6 +8,8 @@ var svg = d3.select("#my_dataviz")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
+    .attr("padding-left", 30)
+    .attr("padding-right", 30)
     .call(d3.zoom().on("zoom", function () {
        svg.attr("transform", d3.event.transform)
     }))
@@ -80,6 +82,8 @@ function handleMouseClick(d, i) {  // Add interactivity
       
       }
   }
+
+  window.scrollTo(0, document.body.scrollHeight);
 }
 
 
@@ -196,7 +200,7 @@ d3.selectAll('#axeText').remove();
       .attr('id', 'axeText')           
       .attr("transform",
             "translate(" + (width/2) + " ," + 
-                           (height + margin.top + 20) + ")")
+                           (height + margin.top + 30) + ")")
       .style("text-anchor", "middle")
       .text(selectedx);
 
