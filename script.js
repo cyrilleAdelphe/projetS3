@@ -17,6 +17,8 @@ var svg = d3.select("#my_dataviz")
 
 var jsondata;
 var selectedx, selectedy;
+var font = '#000000' ;
+var source = 'image/bot.jpg';
 
 // Add X axis
   var x = d3.scaleLinear()
@@ -59,13 +61,22 @@ function handleMouseClick(d, i) {  // Add interactivity
   $('.list-group').empty();
   //populate the list
   for (var i = jsondata.length - 1; i >= 0; i--) {
+    var font ='#000000' 
+    var source = 'images/bot.jpg'  
       if ((jsondata[i][selectedx] === d[selectedx]) && (jsondata[i][selectedy] === d[selectedy])) {
+ // Root in red
+        if  (jsondata[i].ozzoSpeciesUuid !== null) {
+            var font = '#ff0000'
+            var source ='images/racine.jpg';}
         $('.list-group').append("<a class=list-group-item list-group-item-action' id='list-"+jsondata[i].uuid+"-list' data-toggle='list' href='#list-"+jsondata[i].uuid+"' role='tab' aria-controls='"+jsondata[i].uuid+"'>"+jsondata[i].uuid+"</a>");
          // $('.tab-content').append("<ul> <li> <a href='#'>    <div class='tab-content' id='nav-tabContent'></div></a> <ul> <li> <a href='#'><div class='tab-contentp1' id='nav-tabContentp1'></div></a> </li> <li> <a href='#'><div class='tab-contentp2' id='nav-tabContentp2'></div></a></li></ul></li></ul>");
-        $('.tab-content').append("<div class='tab-pane fade' id='list-"+jsondata[i].uuid+"' role='tabpanel' aria-labelledby='list-"+jsondata[i].uuid+"-list'> <h3>Arbre genealogique :</h3><br><div class='tree'><ul><li> <a href='#'>"+jsondata[i].uuid+
+        $('.tab-content').append("<div class='tab-pane fade' id='list-"+jsondata[i].uuid+"' role='tabpanel' aria-labelledby='list-"+jsondata[i].uuid+"-list'> <h3>Arbre genealogique :</h3><br><div class='tree'><ul><li> <a href='#'><font color="+font+">"+jsondata[i].uuid+"</font>"+
           "<br>"+"eatCount: "+jsondata[i].eatCount+
           "<br>"+"libido: "+jsondata[i].libido+
-          "<br>"+"health: "+jsondata[i].health+
+          "<br>"+"health: "+jsondata[i].health+  
+    //Root
+          "<br>"+"<img  src="+source+" alt = 'Racine' width='50' height='50' />"+   
+          "<br>"+"espece: "+ jsondata[i].ozzoSpeciesUuid+   
           "</a> <ul><li><a href='#'>"+jsondata[i].parentUuidList[0]+"</a></li><li> <a href='#'>"+jsondata[i].parentUuidList[1]+"</a></li></ul></li></ul></div>"
             +"</div>");
           //ajout de la liste des parents
