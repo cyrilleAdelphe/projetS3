@@ -99,7 +99,7 @@ function handleMouseClick(d, i) {  // Add interactivity
 
 
 //Read the data
-d3.json("https://raw.githubusercontent.com/cyrilleAdelphe/projetS3/master/data/planet_demo_state_v2.json", function(err, data) {
+d3.json("https://raw.githubusercontent.com/cyrilleAdelphe/projetS3/master/data/planet_demo_state_modified.json", function(err, data) {
   if(err) console.log("error fetching data: "+ err);
   jsondata = data;
   //console.log(data); 
