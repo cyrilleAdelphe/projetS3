@@ -1,9 +1,11 @@
-// set the dimensions and margins of the graph
+//Ozzotopie JS File
+
+// Set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 60, left: 60},
     width = 1060 - margin.left - margin.right,
     height = 550 - margin.top - margin.bottom;
 
-// append the svg object to the body of the page
+// Append the svg object to the body of the page
 var svg = d3.select("#my_dataviz")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -17,40 +19,46 @@ var svg = d3.select("#my_dataviz")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
+// Globals
 var jsondata;
+var jsonurl = "https://raw.githubusercontent.com/cyrilleAdelphe/projetS3/master/data/planet_demo_state_modified.json";
 var selectedx, selectedy;
 var font = '#000000' ;
 var source = 'image/bot.jpg';
+var loadingSpinner = document.getElementById("loading");
 
 // Add X axis
-  var x = d3.scaleLinear()
-    .domain([0, 60])
-    .range([ 0, width ]);
+var x = d3.scaleLinear()
+  .domain([0, 60])
+  .range([ 0, width ]);
 
-  var x_axis = d3.axisBottom()
-      .scale(x);
+var x_axis = d3.axisBottom()
+    .scale(x);
 
-  svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(x_axis);
+svg.append("g")
+  .attr("class", "x axis")
+  .attr("transform", "translate(0," + height + ")")
+  .call(x_axis);
 
-  // Add Y axis
-  var y = d3.scaleLinear()
-    .domain([-15, 110])
-    .range([ height, 0]);
+// Add Y axis
+var y = d3.scaleLinear()
+  .domain([-15, 110])
+  .range([ height, 0]);
 
-  var y_axis = d3.axisLeft()
-      .scale(y);
+var y_axis = d3.axisLeft()
+    .scale(y);
 
-  svg.append("g")
-    .attr("class", "y axis")
-    .call(y_axis);
+svg.append("g")
+  .attr("class", "y axis")
+  .call(y_axis);
 
-// definition de la div du tooltips
+// Definition de la div du tooltips
 var div = d3.select("body").append("div")	
     .attr("class", "tooltip")				
     .style("opacity", 0);
+
+//init
+readData();
 
 // Create Event Handlers for mouse
 function handleMouseClick(d, i) {  // Add interactivity
@@ -66,7 +74,7 @@ function handleMouseClick(d, i) {  // Add interactivity
     var font ='#000000' 
     var source = 'images/bot.jpg'  
       if ((jsondata[i][selectedx] === d[selectedx]) && (jsondata[i][selectedy] === d[selectedy])) {
- // Root in red
+        // Root in red
         if  (jsondata[i].ozzoSpeciesUuid !== null) {
             var font = '#ff0000'
             var source ='images/racine.jpg';}
@@ -97,53 +105,38 @@ function handleMouseClick(d, i) {  // Add interactivity
   window.scrollTo(0, document.body.scrollHeight);
 }
 
+function loadFile() {
+  var e = document.getElementById("urlInput");
+  if (validURL(e.value)) {
+    jsonurl = e.value;
+    loadingSpinner.style.display = "block";
+    d3.selectAll('#allDots').remove();
+    readData();
+  } else {
+    alert("Error: Invalid URL!");
+  }
+  //jsonurl = e.value;
+  console.log('oi '+validURL(e.value));
+}
 
-//Read the data
-d3.json("https://raw.githubusercontent.com/cyrilleAdelphe/projetS3/master/data/planet_demo_state_modified.json", function(err, data) {
-  if(err) console.log("error fetching data: "+ err);
-  jsondata = data;
-  //console.log(data); 
+function validURL(str) {
+  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return !!pattern.test(str);
+}
 
-  // Add dots
-  svg.append('g')
-    .selectAll("dot")
-    .data(data.filter(function(d,i){return i<50000})) // the .filter part is just to keep a few dots on the chart, not all of them
-    .enter()
-    .append("circle")
-      .attr("class", "all dots")
-      .attr('id', 'allDots')
-      .attr("cx", function (d) { return x(d.libido); } )
-      .attr("cy", function (d) { return y(d.health); } )
-      .attr("r", 9)
-      .style("fill", "#91eb13")
-      .style("opacity", 0.5)
-      .style("stroke", "white")
-    .on("mouseover", function(d) {
-       div.transition()
-         .duration(200)
-         .style("opacity", .9);
-       div.html("PlanetUID: " + d.planetUuid)
-      .style("left", (d3.mouse(this)[0]+200) + "px")
-      .style("top", (d3.mouse(this)[1]) + "px")})
-    .on("mouseout", function(d) {
-      div.transition()
-      .duration(500)
-      .style("opacity", 0)
-  } )
-
-})
-
-$( ".dropdown" ).change(function() {
+function loadGraph() {
   var e = document.getElementById("ddx");
   selectedx = e.options[e.selectedIndex].value;
   var e = document.getElementById("ddy");
   selectedy = e.options[e.selectedIndex].value;
-  console.log("dropdown changed x y = "+selectedx+" "+selectedy);
-  console.log(jsondata[1]);
-  console.log("value of the second " + jsondata[1][selectedx]);
 
   //points.exit().remove();
-  d3.selectAll('#allDots').remove();
+  //d3.selectAll('#allDots').remove();
 
   var xmax = 0;
   var xmin = 0;
@@ -204,8 +197,8 @@ $( ".dropdown" ).change(function() {
       .style("opacity", 0)
   } );
 
-d3.selectAll('#axeText').remove();
-//text label for the x axis
+  d3.selectAll('#axeText').remove();
+  //text label for the x axis
    svg.append("text")  
       .attr("class", "axe text")
       .attr('id', 'axeText')           
@@ -215,15 +208,40 @@ d3.selectAll('#axeText').remove();
       .style("text-anchor", "middle")
       .text(selectedx);
 
-// text label for the y axis
-    svg.append("text")
-      .attr("class", "axe text")
-      .attr('id', 'axeText') 
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left)
-      .attr("x",0 - (height / 2))
-      .attr("dy", "1em")
-      .style("text-anchor", "middle")
-      .text(selectedy);     
+  // text label for the y axis
+  svg.append("text")
+    .attr("class", "axe text")
+    .attr('id', 'axeText') 
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left)
+    .attr("x",0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text(selectedy);  
 
+  loadingSpinner.style.display = "none";
+}
+
+//Read the data
+function readData() {
+  d3.json(jsonurl, function(err, data) {
+  //d3.json("https://raw.githubusercontent.com/cyrilleAdelphe/projetS3/master/data/planet_demo_state_v2.json", function(err, data) {
+    if(err) console.log("error fetching data: "+ err);
+    jsondata = data;
+
+    //fill boxes
+    var e = document.getElementById("n_bots");
+    e.innerHTML = jsondata.length;
+    var uniqueNamesCount = _.uniqBy(jsondata, 'planetUuid').length;
+    e = document.getElementById("n_planets");
+    e.innerHTML = uniqueNamesCount;
+
+    // Add dots
+    loadGraph();
+  })
+}
+
+$( ".dropdown" ).change(function() {
+  d3.selectAll('#allDots').remove();
+  loadGraph();    
 });

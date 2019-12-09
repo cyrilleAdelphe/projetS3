@@ -5,12 +5,13 @@
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.5/lodash.min.js"></script>
 
 <head>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -31,10 +32,10 @@
             </a>
             <!-- Here's the magic. Add the .animate and .slide-in classes to your .dropdown-menu and you're all set! -->
             <div class="dropdown-menu dropdown-menu-right animate slideIn" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Connexion to Ozzo</a>
+              <a class="dropdown-item" href="#">Options</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
+              <a class="dropdown-item" href="#">Log in</a>
             </div>
           </li>
         </ul>
@@ -54,7 +55,7 @@
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Population of Bots</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800">40,000</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800" id="n_bots">40,000</div>
               </div>
             </div>
           </div>
@@ -105,7 +106,7 @@
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Planets</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800" id="n_planets">18</div>
               </div>
             </div>
           </div>
@@ -114,13 +115,30 @@
     </div>
 
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <!-- <div class="d-sm-flex mb-4">
       <h1 class="h4 mb-0 text-gray-800">Dashboard</h1>
+      <div class="float-right">
+      <div class="row"><div class="input-group col-xs-4">
+        <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">URL:</span></div>
+        <input type="text" class="form-control" placeholder="JSON file with bots" aria-label="Username" aria-describedby="basic-addon1">
+      </div></div>
+      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Upload File</a>
+      </div>
+    </div> -->
 
+  <div class="d-flex justify-content-between">
+    <h1 class="h4 mb-0 text-gray-800">Dashboard</h1>
 
-      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
-    </div>
-
+    
+      <div class="row"><div class="input-group input-group-sm col-xs-4" style="margin-right: 20px;">
+        <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">URL:</span></div>
+        <input type="text" class="form-control" placeholder="JSON file with bots" aria-label="Url" aria-describedby="basic-addon1" id="urlInput">
+      
+      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="loadFile()"><i class="fas fa-download fa-sm text-white-50"></i>Load File</a>
+      <div id="loading" class="spinner-border text-primary" style="margin-left: 10px;"></div>
+      </div></div>
+  </div>
+<br>
 
     <!-- Content Row -->
 
