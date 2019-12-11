@@ -144,6 +144,7 @@
 
     <!-- Create a div where the graph will take place -->
     <div class="row">
+      <div class="col-md-auto">
       <div class="card shadow">
         <div class="card-header py-3">
           <h6 class="m-0 font-weight-bold text-primary">Graph View</h6>
@@ -152,21 +153,23 @@
           <div id="my_dataviz"></div>
         </div>
       </div>
+    </div>
 
       <!-- Basic Card Example -->
+      <div class="col">
       <div class="card shadow">
         <div class="card-header py-3">
           <h6 class="m-0 font-weight-bold text-primary">Parameters</h6>
         </div>
         <div class="card-body">
           <div class="axe">
-            <h6>X:<h6>
+            <h6>X:</h6>
              <select class="dropdown" style="margin-bottom: 30px;" id="ddx">
               <option value="libido" selected="selected">libido</option>
               <option value="health">health</option>
               <option value="eatCount">eatCount</option>
             </select>
-            <h6>Y:<h6>
+            <h6>Y:</h6>
               <select class="dropdown" id="ddy">
                 <option value="libido">libido</option>
                 <option value="health" selected="selected">health</option>
@@ -175,6 +178,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
 

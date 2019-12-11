@@ -10,8 +10,8 @@ var svg = d3.select("#my_dataviz")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-    .attr("padding-left", 30)
-    .attr("padding-right", 30)
+    // .attr("padding-left", 30)
+    // .attr("padding-right", 30)
     .call(d3.zoom().on("zoom", function () {
        svg.attr("transform", d3.event.transform)
     }))
@@ -76,8 +76,9 @@ function handleMouseClick(d, i) {  // Add interactivity
       if ((jsondata[i][selectedx] === d[selectedx]) && (jsondata[i][selectedy] === d[selectedy])) {
         // Root in red
         if  (jsondata[i].ozzoSpeciesUuid !== null) {
-            var font = '#ff0000'
-            var source ='images/racine.jpg';}
+          var font = '#ff0000'
+          var source ='images/racine.jpg';
+        }
         $('.list-group').append("<a class=list-group-item list-group-item-action' id='list-"+jsondata[i].uuid+"-list' data-toggle='list' href='#list-"+jsondata[i].uuid+"' role='tab' aria-controls='"+jsondata[i].uuid+"'>"+jsondata[i].uuid+"</a>");
          // $('.tab-content').append("<ul> <li> <a href='#'>    <div class='tab-content' id='nav-tabContent'></div></a> <ul> <li> <a href='#'><div class='tab-contentp1' id='nav-tabContentp1'></div></a> </li> <li> <a href='#'><div class='tab-contentp2' id='nav-tabContentp2'></div></a></li></ul></li></ul>");
         $('.tab-content').append("<div class='tab-pane fade' id='list-"+jsondata[i].uuid+"' role='tabpanel' aria-labelledby='list-"+jsondata[i].uuid+"-list'> <h3>Arbre genealogique :</h3><br><div class='tree'><ul><li> <a href='#'><font color="+font+">"+jsondata[i].uuid+"</font>"+
@@ -86,13 +87,15 @@ function handleMouseClick(d, i) {  // Add interactivity
           "<br>"+"health: "+jsondata[i].health+  
     //Root
           "<br>"+"<img  src="+source+" alt = 'Racine' width='50' height='50' />"+   
-          "<br>"+"espece: "+ jsondata[i].ozzoSpeciesUuid+   
-          "</a> <ul><li><a href='#'>"+jsondata[i].parentUuidList[0]+"</a></li><li> <a href='#'>"+jsondata[i].parentUuidList[1]+"</a></li></ul></li></ul></div>"
+          "<br>"+"species: "+ jsondata[i].ozzoSpeciesUuid+   
+          "</a> <ul><li><a onclick='showGrandchild(\""+jsondata[i].uuid+"\",\""+jsondata[i].parentUuidList[0]+"\",\""+jsondata[i].parentUuidList[1]+"\")'>"+
+          jsondata[i].parentUuidList[0]+"</a> <ul id='parenta_"+jsondata[i].uuid+"' style='display:none;'><li><a id='sona_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[0]+"'>GranchildA</a></li> <li><a id='sonb_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[0]+"'>GranchildB</a></li> </ul></li> <li><a onclick='showGrandchild(\""+jsondata[i].uuid+"\",\""+jsondata[i].parentUuidList[0]+"\",\""+jsondata[i].parentUuidList[1]+"\")'>"+
+          jsondata[i].parentUuidList[1]+"</a> <ul id='parentb_"+jsondata[i].uuid+"' style='display:none;'><li><a id='sona_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[1]+"'>GranchildA</a></li> <li><a id='sonb_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[1]+"'>GranchildB</a></li> </ul> </li></ul></li></ul></div>"
             +"</div>");
           //ajout de la liste des parents
-          console.log(jsondata[i]);
-          console.log(jsondata[i].parentUuidList);
-          console.log(jsondata[i].parentUuidList[0]);
+          //console.log(jsondata[i]);
+          //console.log(jsondata[i].parentUuidList);
+          //console.log(jsondata[i].parentUuidList[0]);
           //$('.tab-contentp1').append("<a class=list-group-item list-group-item-action' id='list-"+jsondata[i].parentUuidList[0]+"-list' data-toggle='list' href='#list-"+jsondata[i].parentUuidList[0]+"' role='tab' aria-controls='"+jsondata[i].parentUuidList[0]+"'>"+jsondata[i].parentUuidList[0]+"</a>");
           // $('.tab-contentp1').append("<div class='tab-pane fade' id='list-"+jsondata[i].uuid+"' role='tabpanel' aria-labelledby='list-"+jsondata[i].uuid+"-list'>Uuid: "+
           // jsondata[i].parentUuidList[0]
@@ -245,3 +248,37 @@ $( ".dropdown" ).change(function() {
   d3.selectAll('#allDots').remove();
   loadGraph();    
 });
+
+function showGrandchild(uuid, parent0, parent1) {
+  console.log('oieeeee');
+  console.log("parenta_"+uuid);
+  var parent = document.getElementById("parenta_"+uuid);
+  if(parent.style.display == "block") {
+    parent.style.display = "none"; //hide it
+  } else {
+    parent.style.display = "block"; //show it
+    var grandchild = document.getElementById("sona_"+uuid+"_"+parent0);
+    if(grandchild.innerHTML == "GranchildA") { //first time, lest get the right content
+      for (var i = jsondata.length - 1; i >= 0; i--) { //search for the parents
+        if(jsondata[i].uuid == parent0) {
+          grandchild = document.getElementById("sona_"+uuid+"_"+parent0);
+          grandchild.innerHTML = jsondata[i].parentUuidList[0];
+          grandchild = document.getElementById("sonb_"+uuid+"_"+parent0);
+          grandchild.innerHTML = jsondata[i].parentUuidList[1];
+        }
+        if(jsondata[i].uuid == parent1) {
+          grandchild = document.getElementById("sona_"+uuid+"_"+parent1);
+          grandchild.innerHTML = jsondata[i].parentUuidList[0];
+          grandchild = document.getElementById("sonb_"+uuid+"_"+parent1);
+          grandchild.innerHTML = jsondata[i].parentUuidList[1];
+        }
+      }
+    }
+  }
+  parent = document.getElementById("parentb_"+uuid);
+  if(parent.style.display == "block") {
+    parent.style.display = "none";
+  } else {
+    parent.style.display = "block";
+  }
+}
