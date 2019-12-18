@@ -71,13 +71,13 @@ function handleMouseClick(d, i) {  // Add interactivity
   $('.list-group').empty();
   //populate the list
   for (var i = jsondata.length - 1; i >= 0; i--) {
-    var font ='#000000' 
-    var source = 'images/bot.jpg'  
+    var font ='#000000'; 
+    var source = 'images/bot.jpg';  
       if ((jsondata[i][selectedx] === d[selectedx]) && (jsondata[i][selectedy] === d[selectedy])) {
         // Root in red
         if  (jsondata[i].ozzoSpeciesUuid !== null) {
-          var font = '#ff0000'
-          var source ='images/racine.jpg';
+          font = '#ff0000';
+          source ='images/racine.jpg';
         }
         $('.list-group').append("<a class=list-group-item list-group-item-action' id='list-"+jsondata[i].uuid+"-list' data-toggle='list' href='#list-"+jsondata[i].uuid+"' role='tab' aria-controls='"+jsondata[i].uuid+"'>"+jsondata[i].uuid+"</a>");
          // $('.tab-content').append("<ul> <li> <a href='#'>    <div class='tab-content' id='nav-tabContent'></div></a> <ul> <li> <a href='#'><div class='tab-contentp1' id='nav-tabContentp1'></div></a> </li> <li> <a href='#'><div class='tab-contentp2' id='nav-tabContentp2'></div></a></li></ul></li></ul>");
@@ -252,8 +252,8 @@ $( ".dropdown" ).change(function() {
 function showGrandchild(uuid, parent0, parent1) {
   console.log('oieeeee');
   console.log("parenta_"+uuid);
-  var font ='#000000' 
-  var source = 'images/bot.jpg' 
+  var font ='#000000';
+  var source = 'images/bot.jpg'; 
   var parent = document.getElementById("parenta_"+uuid);
   if(parent.style.display == "block") {
     parent.style.display = "none"; //hide it
@@ -271,8 +271,8 @@ function showGrandchild(uuid, parent0, parent1) {
           var myself = document.getElementById("treea_"+uuid);
           //add more information on myself
           if  (jsondata[i].ozzoSpeciesUuid != null) {
-            var font = '#ff0000'
-            var source ='images/racine.jpg';
+            font = '#ff0000'
+            source ='images/racine.jpg';
           }
           myself.innerHTML = 
           "<font color="+font+">"+jsondata[i].uuid+"</font>"+
@@ -290,8 +290,11 @@ function showGrandchild(uuid, parent0, parent1) {
           var myself = document.getElementById("treeb_"+uuid);
           //add more information on myself
           if  (jsondata[i].ozzoSpeciesUuid != null) {
-            var font = '#ff0000'
-            var source ='images/racine.jpg';
+            font = '#ff0000'
+            source ='images/racine.jpg';
+          } else {
+            font ='#000000';
+            source = 'images/bot.jpg';
           }
           myself.innerHTML = 
           "<font color="+font+">"+jsondata[i].uuid+"</font>"+
