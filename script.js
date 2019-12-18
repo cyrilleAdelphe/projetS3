@@ -81,6 +81,12 @@ function handleMouseClick(d, i) {  // Add interactivity
         }
         $('.list-group').append("<a class=list-group-item list-group-item-action' id='list-"+jsondata[i].uuid+"-list' data-toggle='list' href='#list-"+jsondata[i].uuid+"' role='tab' aria-controls='"+jsondata[i].uuid+"'>"+jsondata[i].uuid+"</a>");
          // $('.tab-content').append("<ul> <li> <a href='#'>    <div class='tab-content' id='nav-tabContent'></div></a> <ul> <li> <a href='#'><div class='tab-contentp1' id='nav-tabContentp1'></div></a> </li> <li> <a href='#'><div class='tab-contentp2' id='nav-tabContentp2'></div></a></li></ul></li></ul>");
+         var parenta_name = jsondata[i].parentUuidList[0];
+         var parentb_name = jsondata[i].parentUuidList[1];
+        if (jsondata[i].parentUuidList[0] === undefined) {
+          parenta_name = "No ancestors for the root!";
+          parentb_name = "No ancestors for the root!";
+        }
         $('.tab-content').append("<div class='tab-pane fade' id='list-"+jsondata[i].uuid+"' role='tabpanel' aria-labelledby='list-"+jsondata[i].uuid+"-list'> <h3>Family Tree:</h3><br><div class='tree'><ul><li> <a href='#'><font color="+font+">"+jsondata[i].uuid+"</font>"+
           "<br>"+"eatCount: "+jsondata[i].eatCount+
           "<br>"+"libido: "+jsondata[i].libido+
@@ -89,8 +95,8 @@ function handleMouseClick(d, i) {  // Add interactivity
           "<br>"+"<img  src="+source+" alt = 'Racine' width='50' height='50' />"+   
           "<br>"+"species: "+ jsondata[i].ozzoSpeciesUuid+   
           "</a> <ul><li><a onclick='showGrandchild(\""+jsondata[i].uuid+"\",\""+jsondata[i].parentUuidList[0]+"\",\""+jsondata[i].parentUuidList[1]+"\")' id='treea_"+jsondata[i].uuid+"'>"+
-          jsondata[i].parentUuidList[0]+"</a> <ul id='parenta_"+jsondata[i].uuid+"' style='display:none;'><li><a id='sona_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[0]+"'>GranchildA</a></li> <li><a id='sonb_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[0]+"'>GranchildB</a></li> </ul></li> <li><a onclick='showGrandchild(\""+jsondata[i].uuid+"\",\""+jsondata[i].parentUuidList[0]+"\",\""+jsondata[i].parentUuidList[1]+"\")' id='treeb_"+jsondata[i].uuid+"'>"+
-          jsondata[i].parentUuidList[1]+"</a> <ul id='parentb_"+jsondata[i].uuid+"' style='display:none;'><li><a id='sona_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[1]+"'>GranchildA</a></li> <li><a id='sonb_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[1]+"'>GranchildB</a></li> </ul> </li></ul></li></ul></div>"
+          parenta_name+"</a> <ul id='parenta_"+jsondata[i].uuid+"' style='display:none;'><li><a id='sona_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[0]+"'>GranchildA</a></li> <li><a id='sonb_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[0]+"'>GranchildB</a></li> </ul></li> <li><a onclick='showGrandchild(\""+jsondata[i].uuid+"\",\""+jsondata[i].parentUuidList[0]+"\",\""+jsondata[i].parentUuidList[1]+"\")' id='treeb_"+jsondata[i].uuid+"'>"+
+          parentb_name+"</a> <ul id='parentb_"+jsondata[i].uuid+"' style='display:none;'><li><a id='sona_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[1]+"'>GranchildA</a></li> <li><a id='sonb_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[1]+"'>GranchildB</a></li> </ul> </li></ul></li></ul></div>"
             +"</div>");
           //ajout de la liste des parents
           //console.log(jsondata[i]);
@@ -250,11 +256,15 @@ $( ".dropdown" ).change(function() {
 });
 
 function showGrandchild(uuid, parent0, parent1) {
-  console.log('oieeeee');
   console.log("parenta_"+uuid);
-  var font ='#000000';
-  var source = 'images/bot.jpg'; 
+  var font;
+  var source; 
   var parent = document.getElementById("parenta_"+uuid);
+  console.log('parent0 '+parent0);
+  if(parent0 === 'undefined') {
+    console.log('parent NULL ');
+    return;
+  }
   if(parent.style.display == "block") {
     parent.style.display = "none"; //hide it
   } else {
@@ -264,15 +274,25 @@ function showGrandchild(uuid, parent0, parent1) {
       for (var i = jsondata.length - 1; i >= 0; i--) { //search for the parents
         if(jsondata[i].uuid == parent0) {
           //add new tree level
-          grandchild = document.getElementById("sona_"+uuid+"_"+parent0);
-          grandchild.innerHTML = jsondata[i].parentUuidList[0];
-          grandchild = document.getElementById("sonb_"+uuid+"_"+parent0);
-          grandchild.innerHTML = jsondata[i].parentUuidList[1];
+          if (jsondata[i].parentUuidList[0] === undefined) {
+            grandchild = document.getElementById("sona_"+uuid+"_"+parent0);
+            grandchild.innerHTML = "No ancestors for the root!";
+            grandchild = document.getElementById("sonb_"+uuid+"_"+parent0);
+            grandchild.innerHTML = "No ancestors for the root!";
+          } else {
+            grandchild = document.getElementById("sona_"+uuid+"_"+parent0);
+            grandchild.innerHTML = jsondata[i].parentUuidList[0];
+            grandchild = document.getElementById("sonb_"+uuid+"_"+parent0);
+            grandchild.innerHTML = jsondata[i].parentUuidList[1];
+          }
           var myself = document.getElementById("treea_"+uuid);
           //add more information on myself
           if  (jsondata[i].ozzoSpeciesUuid != null) {
-            font = '#ff0000'
+            font = '#ff0000';
             source ='images/racine.jpg';
+          } else {
+            font ='#000000';
+            source = 'images/bot.jpg';
           }
           myself.innerHTML = 
           "<font color="+font+">"+jsondata[i].uuid+"</font>"+
@@ -283,14 +303,21 @@ function showGrandchild(uuid, parent0, parent1) {
           "<br>"+"species: "+ jsondata[i].ozzoSpeciesUuid;
         }
         if(jsondata[i].uuid == parent1) {
-          grandchild = document.getElementById("sona_"+uuid+"_"+parent1);
-          grandchild.innerHTML = jsondata[i].parentUuidList[0];
-          grandchild = document.getElementById("sonb_"+uuid+"_"+parent1);
-          grandchild.innerHTML = jsondata[i].parentUuidList[1];
+          if (jsondata[i].parentUuidList[1] === undefined) {
+            grandchild = document.getElementById("sona_"+uuid+"_"+parent1);
+            grandchild.innerHTML = "No ancestors for the root!";
+            grandchild = document.getElementById("sonb_"+uuid+"_"+parent1);
+            grandchild.innerHTML = "No ancestors for the root!";
+          } else {
+            grandchild = document.getElementById("sona_"+uuid+"_"+parent1);
+            grandchild.innerHTML = jsondata[i].parentUuidList[0];
+            grandchild = document.getElementById("sonb_"+uuid+"_"+parent1);
+            grandchild.innerHTML = jsondata[i].parentUuidList[1];
+          }
           var myself = document.getElementById("treeb_"+uuid);
           //add more information on myself
           if  (jsondata[i].ozzoSpeciesUuid != null) {
-            font = '#ff0000'
+            font = '#ff0000';
             source ='images/racine.jpg';
           } else {
             font ='#000000';
