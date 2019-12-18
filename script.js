@@ -88,8 +88,8 @@ function handleMouseClick(d, i) {  // Add interactivity
     //Root
           "<br>"+"<img  src="+source+" alt = 'Racine' width='50' height='50' />"+   
           "<br>"+"species: "+ jsondata[i].ozzoSpeciesUuid+   
-          "</a> <ul><li><a onclick='showGrandchild(\""+jsondata[i].uuid+"\",\""+jsondata[i].parentUuidList[0]+"\",\""+jsondata[i].parentUuidList[1]+"\")'>"+
-          jsondata[i].parentUuidList[0]+"</a> <ul id='parenta_"+jsondata[i].uuid+"' style='display:none;'><li><a id='sona_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[0]+"'>GranchildA</a></li> <li><a id='sonb_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[0]+"'>GranchildB</a></li> </ul></li> <li><a onclick='showGrandchild(\""+jsondata[i].uuid+"\",\""+jsondata[i].parentUuidList[0]+"\",\""+jsondata[i].parentUuidList[1]+"\")'>"+
+          "</a> <ul><li><a onclick='showGrandchild(\""+jsondata[i].uuid+"\",\""+jsondata[i].parentUuidList[0]+"\",\""+jsondata[i].parentUuidList[1]+"\")' id='treea_"+jsondata[i].uuid+"'>"+
+          jsondata[i].parentUuidList[0]+"</a> <ul id='parenta_"+jsondata[i].uuid+"' style='display:none;'><li><a id='sona_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[0]+"'>GranchildA</a></li> <li><a id='sonb_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[0]+"'>GranchildB</a></li> </ul></li> <li><a onclick='showGrandchild(\""+jsondata[i].uuid+"\",\""+jsondata[i].parentUuidList[0]+"\",\""+jsondata[i].parentUuidList[1]+"\")' id='treeb_"+jsondata[i].uuid+"'>"+
           jsondata[i].parentUuidList[1]+"</a> <ul id='parentb_"+jsondata[i].uuid+"' style='display:none;'><li><a id='sona_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[1]+"'>GranchildA</a></li> <li><a id='sonb_"+jsondata[i].uuid+"_"+jsondata[i].parentUuidList[1]+"'>GranchildB</a></li> </ul> </li></ul></li></ul></div>"
             +"</div>");
           //ajout de la liste des parents
@@ -190,9 +190,9 @@ function loadGraph() {
        div.transition()
          .duration(200)
          .style("opacity", .9);
-       div .html("PlanetUIID: " + d.planetUuid)
-      .style("left", (d3.mouse(this)[0]+200) + "px")
-      .style("top", (d3.mouse(this)[1]) + "px")} )
+       div.html("PlanetUIID: " + d.planetUuid)
+      .style("left", (d3.mouse(this)[0]+50) + "px")
+      .style("top", (d3.mouse(this)[1]+270) + "px")} )
     .on("click", handleMouseClick)
     .on("mouseout", function(d) {
       div.transition()
@@ -252,6 +252,8 @@ $( ".dropdown" ).change(function() {
 function showGrandchild(uuid, parent0, parent1) {
   console.log('oieeeee');
   console.log("parenta_"+uuid);
+  var font ='#000000' 
+  var source = 'images/bot.jpg' 
   var parent = document.getElementById("parenta_"+uuid);
   if(parent.style.display == "block") {
     parent.style.display = "none"; //hide it
@@ -261,16 +263,43 @@ function showGrandchild(uuid, parent0, parent1) {
     if(grandchild.innerHTML == "GranchildA") { //first time, lest get the right content
       for (var i = jsondata.length - 1; i >= 0; i--) { //search for the parents
         if(jsondata[i].uuid == parent0) {
+          //add new tree level
           grandchild = document.getElementById("sona_"+uuid+"_"+parent0);
           grandchild.innerHTML = jsondata[i].parentUuidList[0];
           grandchild = document.getElementById("sonb_"+uuid+"_"+parent0);
           grandchild.innerHTML = jsondata[i].parentUuidList[1];
+          var myself = document.getElementById("treea_"+uuid);
+          //add more information on myself
+          if  (jsondata[i].ozzoSpeciesUuid != null) {
+            var font = '#ff0000'
+            var source ='images/racine.jpg';
+          }
+          myself.innerHTML = 
+          "<font color="+font+">"+jsondata[i].uuid+"</font>"+
+          "<br>"+"eatCount: "+jsondata[i].eatCount+
+          "<br>"+"libido: "+jsondata[i].libido+
+          "<br>"+"health: "+jsondata[i].health+  
+          "<br>"+"<img  src="+source+" alt = 'Racine' width='50' height='50' />"+   
+          "<br>"+"species: "+ jsondata[i].ozzoSpeciesUuid;
         }
         if(jsondata[i].uuid == parent1) {
           grandchild = document.getElementById("sona_"+uuid+"_"+parent1);
           grandchild.innerHTML = jsondata[i].parentUuidList[0];
           grandchild = document.getElementById("sonb_"+uuid+"_"+parent1);
           grandchild.innerHTML = jsondata[i].parentUuidList[1];
+          var myself = document.getElementById("treeb_"+uuid);
+          //add more information on myself
+          if  (jsondata[i].ozzoSpeciesUuid != null) {
+            var font = '#ff0000'
+            var source ='images/racine.jpg';
+          }
+          myself.innerHTML = 
+          "<font color="+font+">"+jsondata[i].uuid+"</font>"+
+          "<br>"+"eatCount: "+jsondata[i].eatCount+
+          "<br>"+"libido: "+jsondata[i].libido+
+          "<br>"+"health: "+jsondata[i].health+  
+          "<br>"+"<img  src="+source+" alt = 'Racine' width='50' height='50' />"+   
+          "<br>"+"species: "+ jsondata[i].ozzoSpeciesUuid;
         }
       }
     }
